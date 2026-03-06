@@ -1,20 +1,1096 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KPN AI Lab</title>
+  <title>FairMatch — Every contract. Always fair.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flyonui@2.4.1/flyonui.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: '#1B1464',
+          'navy-light': '#2D2280',
+          'navy-50': '#F0EFF8',
+          coral: '#FF6B4A',
+          'coral-dark': '#E85A3A',
+          'coral-light': '#FFF0ED',
+          'coral-50': '#FFF7F5',
+          mint: '#10B981',
+          'mint-light': '#ECFDF5',
+          amber: '#F59E0B',
+          'amber-light': '#FEF3C7',
+          surface: '#FAFAF8',
+          'surface-warm': '#F5F3EF',
+          'slate-dark': '#1A1A2E',
+          'slate-mid': '#4A4A68',
+          'slate-light': '#8E8EA8',
+          danger: '#EF4444',
+          'danger-light': '#FEF2F2',
+        },
+        fontFamily: {
+          display: ['Bricolage Grotesque', 'sans-serif'],
+          body: ['DM Sans', 'sans-serif'],
+        }
+      }
+    }
+  }
+  </script>
   <style>
-    body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0a0a0a; color: #fff; font-family: system-ui, sans-serif; }
-    .container { text-align: center; }
-    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    p { color: #888; font-size: 1.1rem; }
+    [data-animate] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    [data-animate].animate-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    [data-animate-delay="1"] { transition-delay: 0.12s; }
+    [data-animate-delay="2"] { transition-delay: 0.24s; }
+    [data-animate-delay="3"] { transition-delay: 0.36s; }
+
+    .nav-solid {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 4px rgba(27,20,100,0.06);
+    }
+
+    /* FairMatch signature diagonal stripe pattern */
+    .fm-stripes {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 8px,
+        rgba(255,107,74,0.04) 8px,
+        rgba(255,107,74,0.04) 16px
+      );
+    }
+
+    /* Signature corner accent — the FairMatch "slash" */
+    .fm-slash::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, rgba(255,107,74,0.12) 0%, transparent 60%);
+      border-radius: 0 0 0 100%;
+      pointer-events: none;
+    }
+
+    .tab-active-optimize {
+      background: #1B1464;
+      color: white;
+    }
+    .tab-active-switch {
+      background: #FF6B4A;
+      color: white;
+    }
+
+    .savings-pulse {
+      animation: savingsPulse 2s ease-in-out infinite;
+    }
+    @keyframes savingsPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .counter-value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dashboard-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(27,20,100,0.08);
+    }
+
+    /* Hero gradient background */
+    .hero-gradient {
+      background: linear-gradient(135deg, #FAFAF8 0%, #F0EFF8 50%, #FFF7F5 100%);
+    }
+
+    /* Signature coral underline accent */
+    .coral-underline {
+      position: relative;
+      display: inline;
+    }
+    .coral-underline::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: rgba(255,107,74,0.2);
+      border-radius: 4px;
+      z-index: -1;
+    }
+
+    /* CTA glow */
+    .btn-coral {
+      box-shadow: 0 4px 20px rgba(255,107,74,0.3);
+    }
+    .btn-coral:hover {
+      box-shadow: 0 6px 28px rgba(255,107,74,0.4);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Competitor from Hell</h1>
-    <p>Wordt zo gebouwd... 🔨</p>
-  </div>
+<body class="font-body text-slate-dark bg-white">
+
+  <!-- NAVBAR -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5">
+        <!-- FairMatch logo mark: shield + check -->
+        <div class="w-9 h-9 bg-navy rounded-xl flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-coral/30 to-transparent"></div>
+          <svg class="w-5 h-5 text-white relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <span class="font-display font-bold text-xl text-navy">Fair<span class="text-coral">Match</span></span>
+      </a>
+      <div class="flex items-center gap-8">
+        <a href="#why" class="hidden md:block text-slate-mid hover:text-navy font-medium text-sm transition-colors">Why we exist</a>
+        <a href="#how" class="hidden md:block text-slate-mid hover:text-navy font-medium text-sm transition-colors">How it works</a>
+        <a href="#dashboard" class="hidden md:block text-slate-mid hover:text-navy font-medium text-sm transition-colors">See the dashboard</a>
+        <a href="#cta" class="btn bg-coral hover:bg-coral-dark text-white border-none rounded-xl px-5 py-2.5 text-sm font-bold btn-coral transition-all">
+          Start saving
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO — Split screen with signature gradient background -->
+  <section class="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden hero-gradient">
+    <div class="absolute inset-0 fm-stripes"></div>
+    <div class="max-w-6xl mx-auto px-6 relative">
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Text -->
+        <div data-animate>
+          <div class="inline-flex items-center gap-2 bg-coral-light text-coral rounded-full px-4 py-1.5 text-sm font-semibold mb-6 border border-coral/10">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+            Households save an average of <span class="font-bold">&euro;143/month</span>
+          </div>
+          <h1 class="font-display text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-navy leading-[1.1] tracking-tight mb-6">
+            Every contract.<br>
+            <span class="coral-underline text-coral">Always fair.</span>
+          </h1>
+          <p class="text-lg md:text-xl text-slate-mid leading-relaxed mb-8 max-w-lg">
+            FairMatch tracks what you actually use — and makes every provider compete for your business. Telecom, energy, insurance — always the best deal, without lifting a finger.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#how" class="btn bg-coral hover:bg-coral-dark text-white border-none rounded-xl px-8 py-3.5 text-base font-bold btn-coral transition-all">
+              See how it works
+              <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </a>
+            <a href="#dashboard" class="btn bg-white hover:bg-navy-50 border border-navy/10 text-navy rounded-xl px-8 py-3.5 text-base font-semibold transition-all">
+              See the dashboard
+            </a>
+          </div>
+          <!-- Category pills -->
+          <div class="flex flex-wrap gap-3 mt-10">
+            <span class="inline-flex items-center gap-1.5 bg-white rounded-full px-3.5 py-1.5 text-xs font-semibold text-navy border border-navy/8 shadow-sm">
+              <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              Telecom
+            </span>
+            <span class="inline-flex items-center gap-1.5 bg-white rounded-full px-3.5 py-1.5 text-xs font-semibold text-navy border border-navy/8 shadow-sm">
+              <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Energy & Gas
+            </span>
+            <span class="inline-flex items-center gap-1.5 bg-white rounded-full px-3.5 py-1.5 text-xs font-semibold text-navy border border-navy/8 shadow-sm">
+              <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              Insurance
+            </span>
+            <span class="inline-flex items-center gap-1.5 bg-white rounded-full px-3.5 py-1.5 text-xs font-semibold text-navy border border-navy/8 shadow-sm">
+              <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Subscriptions
+            </span>
+          </div>
+        </div>
+
+        <!-- Phone Mockup with Dashboard -->
+        <div data-animate data-animate-delay="2" class="flex justify-center md:justify-end">
+          <div class="relative">
+            <!-- Phone frame -->
+            <div class="w-[280px] md:w-[320px] bg-white rounded-[2.5rem] shadow-2xl shadow-navy/12 border border-navy/8 p-3 relative">
+              <!-- Notch -->
+              <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-white rounded-b-2xl z-10"></div>
+              <!-- Screen -->
+              <div class="bg-surface rounded-[2rem] overflow-hidden">
+                <!-- Status bar -->
+                <div class="flex items-center justify-between px-6 pt-4 pb-2">
+                  <span class="text-[10px] font-semibold text-navy">9:41</span>
+                  <div class="flex items-center gap-1">
+                    <svg class="w-3 h-3 text-navy" fill="currentColor" viewBox="0 0 24 24"><path d="M12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+                    <svg class="w-3 h-3 text-navy" fill="currentColor" viewBox="0 0 24 24"><path d="M2 22h20V2z"/></svg>
+                  </div>
+                </div>
+                <!-- App header -->
+                <div class="px-5 pb-3">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-6 h-6 bg-navy rounded-lg flex items-center justify-center relative overflow-hidden">
+                      <div class="absolute inset-0 bg-gradient-to-br from-coral/30 to-transparent"></div>
+                      <svg class="w-3.5 h-3.5 text-white relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </div>
+                    <span class="font-display font-bold text-sm text-navy">Fair<span class="text-coral">Match</span></span>
+                  </div>
+                  <p class="text-[11px] text-slate-mid">Hi Martijn, you're saving</p>
+                  <p class="font-display font-extrabold text-2xl text-coral savings-pulse">&euro;143<span class="text-sm font-semibold text-slate-mid">/month</span></p>
+                </div>
+                <!-- Tabs -->
+                <div class="px-5 flex gap-2 mb-3">
+                  <button id="tab-optimize" class="tab-active-optimize rounded-full px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer" onclick="switchTab('optimize')">Optimize</button>
+                  <button id="tab-switch" class="bg-gray-100 text-slate-mid rounded-full px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer" onclick="switchTab('switch')">Switch</button>
+                </div>
+                <!-- Dashboard content: Optimize -->
+                <div id="panel-optimize" class="px-5 pb-5 space-y-2.5">
+                  <div class="bg-white rounded-xl p-3 shadow-sm border border-navy/5 dashboard-card">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        </div>
+                        <span class="text-[12px] font-bold text-navy">Telecom</span>
+                      </div>
+                      <span class="text-[10px] font-bold text-coral bg-coral-light px-2 py-0.5 rounded-full">-&euro;23/mo</span>
+                    </div>
+                    <p class="text-[10px] text-slate-mid leading-relaxed">4 mobile plans, 1 broadband. Overpaying &euro;23/mo. Downgrade recommended.</p>
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2">
+                      <div class="bg-navy h-1.5 rounded-full" style="width: 40%"></div>
+                    </div>
+                    <p class="text-[9px] text-slate-light mt-1">Using 4GB of 10GB</p>
+                  </div>
+                  <div class="bg-white rounded-xl p-3 shadow-sm border border-navy/5 dashboard-card">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-amber-50 rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <span class="text-[12px] font-bold text-navy">Energy & Gas</span>
+                      </div>
+                      <span class="text-[10px] font-bold text-amber bg-amber-light px-2 py-0.5 rounded-full">Renegotiating</span>
+                    </div>
+                    <p class="text-[10px] text-slate-mid leading-relaxed">Usage dropped 18%. Your rate didn't. Renegotiation started.</p>
+                  </div>
+                  <div class="bg-white rounded-xl p-3 shadow-sm border border-navy/5 dashboard-card">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-purple-50 rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </div>
+                        <span class="text-[12px] font-bold text-navy">Subscriptions</span>
+                      </div>
+                      <span class="text-[10px] font-bold text-coral bg-coral-light px-2 py-0.5 rounded-full">-&euro;22/mo</span>
+                    </div>
+                    <p class="text-[10px] text-slate-mid leading-relaxed">3 streaming services. 1 used in 90 days. Cancel 2, save &euro;22/mo.</p>
+                  </div>
+                </div>
+                <!-- Dashboard content: Switch (hidden by default) -->
+                <div id="panel-switch" class="px-5 pb-5 space-y-2.5 hidden">
+                  <div class="bg-white rounded-xl p-3 shadow-sm border border-navy/5 dashboard-card">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-mint-light rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-mint" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <span class="text-[12px] font-bold text-navy">Insurance</span>
+                      </div>
+                      <span class="text-[10px] font-bold text-coral bg-coral-light px-2 py-0.5 rounded-full">6 bids</span>
+                    </div>
+                    <p class="text-[10px] text-slate-mid leading-relaxed">Contract ends in 14 days. 6 providers bidding. Best saves &euro;27/mo.</p>
+                    <div class="flex gap-1 mt-2">
+                      <div class="h-1.5 rounded-full bg-coral flex-1"></div>
+                      <div class="h-1.5 rounded-full bg-coral/60 flex-1"></div>
+                      <div class="h-1.5 rounded-full bg-coral/40 flex-1"></div>
+                      <div class="h-1.5 rounded-full bg-gray-200 flex-1"></div>
+                      <div class="h-1.5 rounded-full bg-gray-200 flex-1"></div>
+                      <div class="h-1.5 rounded-full bg-gray-200 flex-1"></div>
+                    </div>
+                    <p class="text-[9px] text-slate-light mt-1">Best offer highlighted</p>
+                  </div>
+                  <div class="bg-white rounded-xl p-3 shadow-sm border border-navy/5 dashboard-card">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        </div>
+                        <span class="text-[12px] font-bold text-navy">Telecom</span>
+                      </div>
+                      <span class="text-[10px] font-bold text-coral bg-coral-light px-2 py-0.5 rounded-full">4 offers</span>
+                    </div>
+                    <p class="text-[10px] text-slate-mid leading-relaxed">Broadband expired. 4 offers. Top match: 2x speed, same price.</p>
+                  </div>
+                  <div class="bg-white rounded-xl p-3 shadow-sm border border-navy/5 dashboard-card">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-amber-50 rounded-lg flex items-center justify-center">
+                          <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <span class="text-[12px] font-bold text-navy">Energy</span>
+                      </div>
+                      <span class="text-[10px] font-bold text-coral bg-coral-light px-2 py-0.5 rounded-full">8 bids</span>
+                    </div>
+                    <p class="text-[10px] text-slate-mid leading-relaxed">Fixed rate ending. 8 providers competing. Lowest is 22% below current.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Floating savings badge -->
+            <div class="absolute -right-4 top-24 bg-white rounded-2xl shadow-lg border border-navy/8 px-4 py-3 hidden md:flex items-center gap-3">
+              <div class="w-10 h-10 bg-coral-light rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-[11px] text-slate-light font-medium">Yearly savings</p>
+                <p class="font-display font-extrabold text-lg text-navy">&euro;1,716</p>
+              </div>
+            </div>
+            <!-- Floating providers badge -->
+            <div class="absolute -left-6 bottom-32 bg-white rounded-2xl shadow-lg border border-navy/8 px-4 py-3 hidden md:flex items-center gap-3">
+              <div class="w-10 h-10 bg-navy-50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-navy" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-[11px] text-slate-light font-medium">Providers competing</p>
+                <p class="font-display font-extrabold text-lg text-navy">47+</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF BAR -->
+  <section class="border-y border-navy/6 bg-white py-8">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center" data-animate>
+        <div>
+          <p class="font-display font-extrabold text-2xl md:text-3xl text-navy counter-value" data-target="34200">0</p>
+          <p class="text-sm text-slate-mid mt-1">Households connected</p>
+        </div>
+        <div>
+          <p class="font-display font-extrabold text-2xl md:text-3xl text-coral counter-value">&euro;<span data-target="143">0</span></p>
+          <p class="text-sm text-slate-mid mt-1">Average monthly savings</p>
+        </div>
+        <div>
+          <p class="font-display font-extrabold text-2xl md:text-3xl text-navy counter-value" data-target="47">0</p>
+          <p class="text-sm text-slate-mid mt-1">Competing providers</p>
+        </div>
+        <div>
+          <p class="font-display font-extrabold text-2xl md:text-3xl text-navy counter-value"><span data-target="4">0</span> min</p>
+          <p class="text-sm text-slate-mid mt-1">Average time to switch</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM SECTION -->
+  <section id="why" class="py-20 md:py-28 bg-white">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <div data-animate>
+        <span class="inline-flex items-center gap-2 text-coral text-sm font-bold mb-6">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          The uncomfortable truth
+        </span>
+        <h2 class="font-display text-3xl md:text-5xl font-extrabold text-navy mb-6 tracking-tight">
+          You're overpaying.<br>On everything.
+        </h2>
+        <p class="text-lg md:text-xl text-slate-mid leading-relaxed max-w-3xl mx-auto mb-10">
+          You pay for 10GB but use 4. Your energy rate hasn't changed in three years even though the market has. Your insurance renews automatically at a higher price every year. Providers count on one thing: you're too busy to check.
+        </p>
+      </div>
+      <div data-animate data-animate-delay="1" class="bg-gradient-to-br from-coral-50 to-coral-light border border-coral/10 rounded-2xl p-8 md:p-10 inline-block relative overflow-hidden fm-slash">
+        <p class="font-display font-extrabold text-4xl md:text-5xl text-coral mb-2 relative z-10">&euro;1,200+</p>
+        <p class="text-slate-mid text-base relative z-10">The average Dutch household wastes per year on contracts<br class="hidden md:block"> that don't match what they actually use.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION — Two modes section with alternating layout -->
+  <section id="how" class="py-20 md:py-28 bg-surface-warm fm-stripes">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16" data-animate>
+        <h2 class="font-display text-3xl md:text-4xl font-extrabold text-navy mb-4 tracking-tight">
+          Two modes. One goal.<br>
+          <span class="coral-underline text-coral">You always win.</span>
+        </h2>
+      </div>
+
+      <!-- Mode 1: Optimize -->
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center mb-20" data-animate>
+        <div>
+          <div class="inline-flex items-center gap-2 bg-navy text-white rounded-full px-4 py-1.5 text-sm font-bold mb-5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            In contract: Optimize
+          </div>
+          <h3 class="font-display text-2xl md:text-3xl font-extrabold text-navy mb-4 leading-tight">
+            While you're locked in, we squeeze every cent.
+          </h3>
+          <p class="text-base md:text-lg text-slate-mid leading-relaxed mb-6">
+            FairMatch tracks your real usage across telecom, energy, gas, and insurance — and makes sure you never pay for what you don't use. Downgrades, renegotiations, dropped add-ons — all automatic.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-navy-50 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-navy" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-slate-mid">Real-time usage tracking across all contracts</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-navy-50 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-navy" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-slate-mid">Automatic downgrade recommendations</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-navy-50 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-navy" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-slate-mid">Sneaky price increases flagged instantly</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-navy/6 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-coral/5 to-transparent rounded-bl-full"></div>
+          <div class="flex items-center gap-2 mb-5">
+            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+            <span class="ml-3 text-xs text-slate-light font-medium">FairMatch Dashboard — Optimize Mode</span>
+          </div>
+          <div class="space-y-4 relative z-10">
+            <div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-navy">Telecom</p>
+                  <p class="text-xs text-slate-light">4 mobile + 1 broadband</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-bold text-coral">-&euro;23/mo</p>
+                <p class="text-[10px] text-slate-light">Downgrade ready</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-navy">Energy & Gas</p>
+                  <p class="text-xs text-slate-light">Usage down 18%</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="inline-flex items-center px-2.5 py-1 bg-amber-light text-amber text-[10px] font-bold rounded-full">Renegotiating</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-navy">Subscriptions</p>
+                  <p class="text-xs text-slate-light">1 of 3 used in 90 days</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-bold text-coral">-&euro;22/mo</p>
+                <p class="text-[10px] text-slate-light">Cancel 2 services</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-navy/6 flex items-center justify-between relative z-10">
+            <span class="text-xs text-slate-light">Total monthly optimization</span>
+            <span class="font-display font-extrabold text-xl text-coral">&euro;45/mo saved</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode 2: Switch -->
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center mb-20" data-animate>
+        <div class="order-2 md:order-1 bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-navy/6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-coral/5 to-transparent rounded-br-full"></div>
+          <div class="flex items-center gap-2 mb-5">
+            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+            <span class="ml-3 text-xs text-slate-light font-medium">FairMatch Dashboard — Switch Mode</span>
+          </div>
+          <div class="space-y-4 relative z-10">
+            <div class="p-4 bg-surface rounded-xl">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-mint-light rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-navy">Insurance</p>
+                    <p class="text-xs text-slate-light">Contract ends in 14 days</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2.5 py-1 bg-coral-light text-coral text-xs font-bold rounded-full">6 bids</span>
+              </div>
+              <!-- Provider bids visualization -->
+              <div class="space-y-2">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-coral rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs font-bold text-navy">Best match</span>
+                      <span class="text-xs font-bold text-coral">-&euro;27/mo</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2 mt-1">
+                      <div class="bg-coral h-2 rounded-full" style="width: 92%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 opacity-60">
+                  <div class="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs font-medium text-slate-mid">Runner up</span>
+                      <span class="text-xs font-medium text-slate-mid">-&euro;21/mo</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2 mt-1">
+                      <div class="bg-gray-300 h-2 rounded-full" style="width: 74%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 opacity-40">
+                  <div class="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs font-medium text-slate-mid">3rd offer</span>
+                      <span class="text-xs font-medium text-slate-mid">-&euro;16/mo</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2 mt-1">
+                      <div class="bg-gray-300 h-2 rounded-full" style="width: 55%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-navy">Telecom — Broadband</p>
+                  <p class="text-xs text-slate-light">Contract expired</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-1 bg-coral-light text-coral text-xs font-bold rounded-full">4 offers</span>
+            </div>
+            <div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-navy">Energy</p>
+                  <p class="text-xs text-slate-light">Fixed rate ending</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-1 bg-coral-light text-coral text-xs font-bold rounded-full">8 bids</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-navy/6 flex items-center justify-between relative z-10">
+            <span class="text-xs text-slate-light">Best available savings</span>
+            <span class="font-display font-extrabold text-xl text-coral">&euro;98/mo potential</span>
+          </div>
+        </div>
+        <div class="order-1 md:order-2">
+          <div class="inline-flex items-center gap-2 bg-coral text-white rounded-full px-4 py-1.5 text-sm font-bold mb-5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+            </svg>
+            Out of contract: Switch
+          </div>
+          <h3 class="font-display text-2xl md:text-3xl font-extrabold text-navy mb-4 leading-tight">
+            When you're free, providers fight for you.
+          </h3>
+          <p class="text-base md:text-lg text-slate-mid leading-relaxed mb-6">
+            The moment your contract ends, FairMatch flips into marketplace mode. Providers submit their best offers. The AI picks the winner. You switch without making a single call.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-coral-light rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-slate-mid">Providers bid for your business — not the other way around</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-coral-light rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-slate-mid">AI compares offers on price, quality, and fit</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-coral-light rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-slate-mid">One tap to switch — no calls, no forms, no hassle</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mode 3: Protect — with Dutch family photo -->
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center" data-animate>
+        <div>
+          <div class="inline-flex items-center gap-2 bg-navy text-white rounded-full px-4 py-1.5 text-sm font-bold mb-5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            Always on: Protect
+          </div>
+          <h3 class="font-display text-2xl md:text-3xl font-extrabold text-navy mb-4 leading-tight">
+            You'll never overpay again.
+          </h3>
+          <p class="text-base md:text-lg text-slate-mid leading-relaxed mb-6">
+            Whether you're mid-contract or free to move — FairMatch watches your spending 24/7. No sneaky price increases. No auto-renewals at higher rates. No forgotten subscriptions.
+          </p>
+          <div class="bg-navy-50 border border-navy/8 rounded-2xl p-6">
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div class="w-12 h-12 mx-auto bg-white rounded-xl flex items-center justify-center shadow-sm mb-2">
+                  <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </div>
+                <p class="text-xs font-bold text-navy">Price watch</p>
+                <p class="text-[10px] text-slate-mid mt-0.5">24/7 monitoring</p>
+              </div>
+              <div>
+                <div class="w-12 h-12 mx-auto bg-white rounded-xl flex items-center justify-center shadow-sm mb-2">
+                  <svg class="w-6 h-6 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                </div>
+                <p class="text-xs font-bold text-navy">Alerts</p>
+                <p class="text-[10px] text-slate-mid mt-0.5">Instant warnings</p>
+              </div>
+              <div>
+                <div class="w-12 h-12 mx-auto bg-white rounded-xl flex items-center justify-center shadow-sm mb-2">
+                  <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <p class="text-xs font-bold text-navy">Block</p>
+                <p class="text-[10px] text-slate-mid mt-0.5">Auto-renewals stopped</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <!-- Dutch family: father and daughter at the kitchen table -->
+          <img src="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&w=600" alt="Father and daughter at kitchen table looking at tablet together" class="rounded-2xl shadow-lg object-cover w-full max-w-md h-80">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FULL-WIDTH DASHBOARD SHOWCASE -->
+  <section id="dashboard" class="py-20 md:py-28 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12" data-animate>
+        <span class="inline-flex items-center gap-2 text-coral text-sm font-bold mb-4">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          Live dashboard
+        </span>
+        <h2 class="font-display text-3xl md:text-4xl font-extrabold text-navy tracking-tight mb-4">
+          See what FairMatch sees
+        </h2>
+        <p class="text-lg text-slate-mid max-w-2xl mx-auto">
+          Your entire household spending — across telecom, energy, insurance, and subscriptions — in one view. No spreadsheets. No Saturday afternoons comparing providers.
+        </p>
+      </div>
+
+      <!-- Browser mockup dashboard -->
+      <div data-animate data-animate-delay="1" class="relative">
+        <div class="bg-white rounded-2xl shadow-2xl shadow-navy/8 border border-navy/8 overflow-hidden">
+          <!-- Browser toolbar -->
+          <div class="flex items-center gap-3 px-5 py-3.5 bg-surface border-b border-navy/6">
+            <div class="flex gap-1.5">
+              <div class="w-3 h-3 rounded-full bg-red-400"></div>
+              <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+              <div class="w-3 h-3 rounded-full bg-green-400"></div>
+            </div>
+            <div class="flex-1 flex justify-center">
+              <div class="flex items-center gap-2 bg-white rounded-lg px-4 py-1.5 border border-navy/8 text-sm text-slate-light w-full max-w-md">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                app.fairmatch.nl/dashboard
+              </div>
+            </div>
+          </div>
+          <!-- Dashboard content -->
+          <div class="p-6 md:p-8 bg-surface">
+            <!-- Dashboard header -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+              <div>
+                <h3 class="font-display font-bold text-xl text-navy">Good morning, Martijn</h3>
+                <p class="text-sm text-slate-mid">Household overview — De Vries family</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="bg-coral-light border border-coral/10 text-coral rounded-xl px-4 py-2 text-center">
+                  <p class="text-xs font-medium">Monthly savings</p>
+                  <p class="font-display font-extrabold text-xl">&euro;143</p>
+                </div>
+                <div class="bg-navy-50 border border-navy/10 text-navy rounded-xl px-4 py-2 text-center">
+                  <p class="text-xs font-medium">Since joining</p>
+                  <p class="font-display font-extrabold text-xl">&euro;2,148</p>
+                </div>
+              </div>
+            </div>
+            <!-- Dashboard grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Telecom card -->
+              <div class="bg-white rounded-xl p-5 border border-navy/6 shadow-sm dashboard-card">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  </div>
+                  <span class="text-xs font-bold text-navy bg-navy-50 px-2.5 py-1 rounded-full">Optimizing</span>
+                </div>
+                <p class="font-display font-bold text-base text-navy mb-1">Telecom</p>
+                <p class="text-xs text-slate-mid mb-3">4 mobile plans + broadband</p>
+                <div class="space-y-1.5">
+                  <div class="flex justify-between text-xs">
+                    <span class="text-slate-light">Data usage</span>
+                    <span class="font-bold text-navy">4/10 GB</span>
+                  </div>
+                  <div class="w-full bg-gray-100 rounded-full h-2">
+                    <div class="bg-navy h-2 rounded-full" style="width: 40%"></div>
+                  </div>
+                </div>
+                <p class="text-xs font-bold text-coral mt-3">Saving you &euro;23/mo</p>
+              </div>
+              <!-- Energy card -->
+              <div class="bg-white rounded-xl p-5 border border-navy/6 shadow-sm dashboard-card">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  </div>
+                  <span class="text-xs font-bold text-amber bg-amber-light px-2.5 py-1 rounded-full">Renegotiating</span>
+                </div>
+                <p class="font-display font-bold text-base text-navy mb-1">Energy & Gas</p>
+                <p class="text-xs text-slate-mid mb-3">Usage dropped 18% YoY</p>
+                <div class="flex items-end gap-1 h-10">
+                  <div class="bg-navy/20 rounded-sm w-4" style="height: 100%"></div>
+                  <div class="bg-navy/20 rounded-sm w-4" style="height: 85%"></div>
+                  <div class="bg-navy/30 rounded-sm w-4" style="height: 70%"></div>
+                  <div class="bg-navy/40 rounded-sm w-4" style="height: 60%"></div>
+                  <div class="bg-coral/60 rounded-sm w-4" style="height: 50%"></div>
+                  <div class="bg-coral rounded-sm w-4" style="height: 42%"></div>
+                </div>
+                <p class="text-xs font-bold text-amber mt-3">Rate adjustment in progress</p>
+              </div>
+              <!-- Insurance card -->
+              <div class="bg-white rounded-xl p-5 border border-navy/6 shadow-sm dashboard-card">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 bg-mint-light rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  </div>
+                  <span class="text-xs font-bold text-coral bg-coral-light px-2.5 py-1 rounded-full">6 bids</span>
+                </div>
+                <p class="font-display font-bold text-base text-navy mb-1">Insurance</p>
+                <p class="text-xs text-slate-mid mb-3">Contract ends in 14 days</p>
+                <div class="flex gap-1">
+                  <div class="h-2 rounded-full bg-coral flex-1"></div>
+                  <div class="h-2 rounded-full bg-coral/60 flex-1"></div>
+                  <div class="h-2 rounded-full bg-coral/40 flex-1"></div>
+                  <div class="h-2 rounded-full bg-gray-200 flex-1"></div>
+                  <div class="h-2 rounded-full bg-gray-200 flex-1"></div>
+                  <div class="h-2 rounded-full bg-gray-200 flex-1"></div>
+                </div>
+                <p class="text-xs font-bold text-coral mt-3">Best offer: -&euro;27/mo</p>
+              </div>
+              <!-- Subscriptions card -->
+              <div class="bg-white rounded-xl p-5 border border-navy/6 shadow-sm dashboard-card">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                  </div>
+                  <span class="text-xs font-bold text-coral bg-coral-light px-2.5 py-1 rounded-full">Action needed</span>
+                </div>
+                <p class="font-display font-bold text-base text-navy mb-1">Subscriptions</p>
+                <p class="text-xs text-slate-mid mb-3">3 services tracked</p>
+                <div class="space-y-1.5">
+                  <div class="flex items-center gap-2 text-xs">
+                    <div class="w-2 h-2 rounded-full bg-mint"></div>
+                    <span class="text-navy">Netflix</span>
+                    <span class="ml-auto text-mint font-bold">Active</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                    <span class="text-slate-light line-through">Disney+</span>
+                    <span class="ml-auto text-coral font-bold">Cancel</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                    <span class="text-slate-light line-through">HBO Max</span>
+                    <span class="ml-auto text-coral font-bold">Cancel</span>
+                  </div>
+                </div>
+                <p class="text-xs font-bold text-coral mt-3">Save &euro;22/mo</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DANGER SECTION -->
+  <section class="py-20 md:py-28 bg-navy relative overflow-hidden">
+    <!-- Signature coral accent corner -->
+    <div class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-coral/15 to-transparent rounded-bl-full"></div>
+    <div class="absolute bottom-0 left-0 w-60 h-60 bg-gradient-to-tr from-coral/8 to-transparent rounded-tr-full"></div>
+    <div class="max-w-5xl mx-auto px-6 relative z-10">
+      <div class="text-center" data-animate>
+        <span class="inline-flex items-center gap-2 text-coral text-sm font-bold mb-6">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Why existing players should be worried
+        </span>
+        <h2 class="font-display text-2xl md:text-4xl lg:text-5xl font-extrabold text-white mb-10 leading-tight tracking-tight max-w-4xl mx-auto">
+          Every provider in the Netherlands makes money because you don't have time to check. <span class="text-coral">We just gave you the time.</span>
+        </h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6" data-animate data-animate-delay="1">
+        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-coral/10 to-transparent rounded-bl-full"></div>
+          <div class="w-12 h-12 bg-coral/20 rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          </div>
+          <p class="text-white/90 leading-relaxed relative z-10">
+            Telecom companies lose their pricing power when customers see exactly what they use versus what they pay.
+          </p>
+        </div>
+        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-coral/10 to-transparent rounded-bl-full"></div>
+          <div class="w-12 h-12 bg-coral/20 rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <p class="text-white/90 leading-relaxed relative z-10">
+            Energy providers can't hide behind complex tariff structures when an AI reads your meter in real time.
+          </p>
+        </div>
+        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-coral/10 to-transparent rounded-bl-full"></div>
+          <div class="w-12 h-12 bg-coral/20 rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-coral" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <p class="text-white/90 leading-relaxed relative z-10">
+            Insurers can't auto-renew at higher rates when FairMatch renegotiates before they do.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER / TESTIMONIAL SECTION -->
+  <section class="py-20 md:py-28 bg-surface-warm fm-stripes">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="grid md:grid-cols-2 gap-12 items-center" data-animate>
+        <div>
+          <!-- Dutch family: couple on couch with laptop, casual setting -->
+          <img src="https://images.pexels.com/photos/5257520/pexels-photo-5257520.jpeg?auto=compress&w=600" alt="Dutch couple on the couch looking at a laptop together" class="rounded-2xl shadow-lg object-cover w-full h-80">
+        </div>
+        <div>
+          <h2 class="font-display text-3xl md:text-4xl font-extrabold text-navy mb-4 tracking-tight">
+            Built for busy households
+          </h2>
+          <p class="text-lg text-slate-mid leading-relaxed mb-8">
+            For the parent who manages four phones, broadband, energy, insurance, and streaming — and knows they're overpaying but never has time to fix it.
+          </p>
+          <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-navy/6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-coral/8 to-transparent rounded-bl-full"></div>
+            <svg class="w-10 h-10 text-coral/20 absolute top-4 left-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+            </svg>
+            <p class="text-slate-dark text-lg leading-relaxed mb-6 relative z-10 pt-6">
+              I always knew we were paying too much. I just never had two hours on a Saturday to sit down and compare everything. FairMatch did it in 10 minutes — we save over &euro;140 a month now.
+            </p>
+            <div class="flex items-center gap-4 relative z-10">
+              <div class="w-12 h-12 bg-gradient-to-br from-navy to-navy-light rounded-full flex items-center justify-center">
+                <span class="font-display font-bold text-white text-lg">M</span>
+              </div>
+              <div>
+                <p class="font-display font-bold text-navy">Martijn de Vries</p>
+                <p class="text-sm text-slate-mid">Father of two, Rotterdam</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section id="cta" class="py-20 md:py-28 bg-white">
+    <div class="max-w-3xl mx-auto px-6 text-center" data-animate>
+      <div class="bg-gradient-to-br from-navy to-navy-light rounded-3xl p-10 md:p-14 relative overflow-hidden">
+        <!-- Signature coral accent shapes -->
+        <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-coral/20 to-transparent rounded-bl-full"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-coral/10 to-transparent rounded-tr-full"></div>
+        <div class="absolute inset-0 fm-stripes opacity-30"></div>
+        <div class="relative z-10">
+          <h2 class="font-display text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+            Stop overpaying. Start today.
+          </h2>
+          <p class="text-lg text-white/70 mb-8 max-w-xl mx-auto">
+            Connect your household in 2 minutes. FairMatch scans all your contracts and shows you exactly where you're losing money — for free.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#" class="btn bg-coral hover:bg-coral-dark text-white border-none rounded-xl px-8 py-4 text-base font-bold btn-coral transition-all">
+              Get started — it's free
+              <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </a>
+          </div>
+          <p class="text-sm text-white/50 mt-5">No credit card. No commitment. See your savings in 2 minutes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-navy py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-coral/30 to-transparent"></div>
+            <svg class="w-4 h-4 text-white relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <span class="font-display font-bold text-lg text-white">Fair<span class="text-coral">Match</span></span>
+        </div>
+        <p class="text-white/40 text-sm">Every contract. Always fair.</p>
+        <p class="text-white/30 text-sm">&copy; 2026 FairMatch &middot; Built at AI Lab</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/flyonui@2.4.1/flyonui.js"></script>
+  <script>
+    // Scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+
+    // Navbar solid on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbar.classList.add('nav-solid');
+      } else {
+        navbar.classList.remove('nav-solid');
+      }
+    });
+
+    // Tab switching for phone mockup
+    function switchTab(tab) {
+      const tabOptimize = document.getElementById('tab-optimize');
+      const tabSwitch = document.getElementById('tab-switch');
+      const panelOptimize = document.getElementById('panel-optimize');
+      const panelSwitch = document.getElementById('panel-switch');
+
+      if (tab === 'optimize') {
+        tabOptimize.className = 'tab-active-optimize rounded-full px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer';
+        tabSwitch.className = 'bg-gray-100 text-slate-mid rounded-full px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer';
+        panelOptimize.classList.remove('hidden');
+        panelSwitch.classList.add('hidden');
+      } else {
+        tabSwitch.className = 'tab-active-switch rounded-full px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer';
+        tabOptimize.className = 'bg-gray-100 text-slate-mid rounded-full px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer';
+        panelSwitch.classList.remove('hidden');
+        panelOptimize.classList.add('hidden');
+      }
+    }
+
+    // Animated counters
+    function animateCounter(element, target, suffix) {
+      const duration = 2000;
+      const increment = target / (duration / 16);
+      let current = 0;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        if (target >= 1000) {
+          element.textContent = Math.floor(current).toLocaleString('nl-NL');
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 16);
+    }
+
+    // Observe each counter element individually
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = parseInt(entry.target.getAttribute('data-target'));
+          animateCounter(entry.target, target, '');
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('[data-target]').forEach(el => {
+      counterObserver.observe(el);
+    });
+
+    // Auto-switch dashboard tabs every 4 seconds
+    let currentTab = 'optimize';
+    setInterval(() => {
+      currentTab = currentTab === 'optimize' ? 'switch' : 'optimize';
+      switchTab(currentTab);
+    }, 4000);
+  </script>
 </body>
 </html>
